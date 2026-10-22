@@ -1,0 +1,122 @@
+{
+  "scanner_version": "0.2.1-py",
+  "scan_timestamp": "2026-10-22T08:00:00Z",
+  "scanned_target": "WORKSTATION-SEC-WIN11 (C:\\Users\\kamran\\Desktop\\Aiteebar-Lab)",
+  "discovered_apps": [
+    {
+      "name": "Cursor",
+      "category": "AI coding editors",
+      "install_path": "C:\\Users\\kamran\\AppData\\Local\\Programs\\cursor\\Cursor.exe",
+      "is_running": true,
+      "running_status": "Running",
+      "discovery_method": "Windows candidate path & process table",
+      "confidence": "High",
+      "monitoring_coverage": "MCP Config file inspection & filesystem watchdog active",
+      "executable_name": "Cursor.exe"
+    },
+    {
+      "name": "Claude Desktop",
+      "category": "Desktop AI assistants",
+      "install_path": "C:\\Users\\kamran\\AppData\\Local\\AnthropicClaude\\Claude.exe",
+      "is_running": false,
+      "running_status": "Installed",
+      "discovery_method": "Windows candidate path inspection",
+      "confidence": "High",
+      "monitoring_coverage": "Config discovery supported",
+      "executable_name": "Claude.exe"
+    },
+    {
+      "name": "Ollama Local Runtime",
+      "category": "Local AI runtimes",
+      "install_path": "C:\\Users\\kamran\\AppData\\Local\\Programs\\Ollama\\ollama.exe",
+      "is_running": true,
+      "running_status": "Running",
+      "discovery_method": "Local service check (127.0.0.1:11434)",
+      "confidence": "High",
+      "monitoring_coverage": "Process verified",
+      "executable_name": "ollama.exe"
+    }
+  ],
+  "mcp_servers": [
+    {
+      "name": "filesystem-tools-cursor",
+      "parent_app": "Cursor",
+      "config_file_path": "C:\\Users\\kamran\\AppData\\Roaming\\Cursor\\User\\globalStorage\\cursor_settings.json",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem@latest", "C:\\Users\\kamran\\Projects"],
+      "is_version_pinned": false,
+      "allowed_folders": ["C:\\Users\\kamran\\Projects"],
+      "evidence_source": "Cursor MCP configuration file"
+    },
+    {
+      "name": "database-inspect-dev",
+      "parent_app": "Cursor",
+      "config_file_path": "C:\\Users\\kamran\\AppData\\Roaming\\Cursor\\User\\globalStorage\\cursor_settings.json",
+      "command": "cmd.exe",
+      "args": ["/c", "python", "-m", "mcp_db_bridge", "--auto-approve"],
+      "is_version_pinned": false,
+      "allowed_folders": [],
+      "evidence_source": "Cursor MCP configuration file"
+    },
+    {
+      "name": "git-secure-mcp",
+      "parent_app": "Cursor",
+      "config_file_path": "C:\\Users\\kamran\\AppData\\Roaming\\Cursor\\User\\globalStorage\\cursor_settings.json",
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/git:v1.2.0"],
+      "is_version_pinned": true,
+      "allowed_folders": ["C:\\Users\\kamran\\Projects\\aiteebar"],
+      "evidence_source": "Cursor MCP configuration file"
+    }
+  ],
+  "findings": [
+    {
+      "rule_id": "AIT-MCP-CMD-01",
+      "severity": "HIGH",
+      "title": "Suspicious Shell Invocations in MCP Server Declaration",
+      "description": "The MCP server 'database-inspect-dev' launches via 'cmd.exe /c' with automated approval flags. This bypasses user confirmation prompts and permits subshell command injection.",
+      "category": "RUNTIME_SUSPICION",
+      "related_app": "Cursor",
+      "related_mcp_server": "database-inspect-dev",
+      "evidence": "command: 'cmd.exe', args: ['/c', 'python', '-m', 'mcp_db_bridge', '--auto-approve']",
+      "source": "risk_engine.py configuration rule evaluation",
+      "recommendation": "Remove 'cmd.exe /c' wrapper, invoke python binary directly, and eliminate '--auto-approve' to ensure human-in-the-loop validation."
+    },
+    {
+      "rule_id": "AIT-MCP-VER-02",
+      "severity": "MEDIUM",
+      "title": "Unpinned MCP Package Reference (@latest)",
+      "description": "The MCP server 'filesystem-tools-cursor' references unpinned dependency '@modelcontextprotocol/server-filesystem@latest' with auto-install flag '-y'.",
+      "category": "UNPINNED_DEPENDENCY",
+      "related_app": "Cursor",
+      "related_mcp_server": "filesystem-tools-cursor",
+      "evidence": "args: ['-y', '@modelcontextprotocol/server-filesystem@latest']",
+      "source": "risk_engine.py version pinning check",
+      "recommendation": "Pin package to explicit immutable version (e.g., @modelcontextprotocol/server-filesystem@0.6.2) and eliminate '-y' flag."
+    }
+  ],
+  "activity_events": [
+    {
+      "event_type": "file_modified",
+      "timestamp": "2026-10-22T07:48:00Z",
+      "file_path": "C:\\Users\\kamran\\Projects\\backend\\server.ts",
+      "is_directory": false,
+      "evidence_source": "Watchdog Filesystem Monitor (activity_monitor.py)",
+      "responsible_process": "Responsible process unknown",
+      "attribution_status": "Unavailable",
+      "evidence_details": "File modification event detected in monitored directory 'C:\\Users\\kamran\\Projects'.",
+      "limitations": "Filesystem Watchdog cannot attribute process PID without ETW provider."
+    },
+    {
+      "event_type": "file_created",
+      "timestamp": "2026-10-22T07:35:00Z",
+      "file_path": "C:\\Users\\kamran\\Projects\\temp_output.log",
+      "is_directory": false,
+      "evidence_source": "Watchdog Filesystem Monitor (activity_monitor.py)",
+      "responsible_process": "Responsible process unknown",
+      "attribution_status": "Unavailable",
+      "evidence_details": "File created in root project directory.",
+      "limitations": "Filesystem Watchdog cannot attribute process PID without ETW provider."
+    }
+  ]
+}

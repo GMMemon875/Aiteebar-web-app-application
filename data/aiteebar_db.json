@@ -1,0 +1,318 @@
+{
+  "users": [],
+  "applications": [
+    {
+      "id": "app-5e42c33b-fa0a-46e9-a1bd-d0521cd00554",
+      "name": "Cursor",
+      "category": "AI coding editors",
+      "runningStatus": "Running",
+      "discoveryMethod": "Windows candidate paths / process check",
+      "lastObserved": "2026-10-22T08:18:44.775Z",
+      "monitoringCoverage": "Configuration inspection supported",
+      "detectionConfidence": "High",
+      "approvalStatus": "Under Review",
+      "scanReportId": "scan-01709e98-a856-4746-bcdb-589b71b0b4c7"
+    }
+  ],
+  "mcpServers": [
+    {
+      "id": "mcp-c1e773a1-2ddc-4144-a33d-1ea8fdb1a091",
+      "name": "unsafe-shell-server",
+      "parentApp": "Cursor",
+      "configFilePath": "cursor_settings.json",
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "python",
+        "-m",
+        "server",
+        "-y"
+      ],
+      "packageName": "/c",
+      "packageVersion": "Unpinned/Latest",
+      "isVersionPinned": false,
+      "allowedFolders": [],
+      "findingsCount": {
+        "high": 1,
+        "medium": 1,
+        "low": 0
+      },
+      "lastObserved": "2026-10-22T08:18:44.775Z",
+      "approvalStatus": "Review Required",
+      "evidenceSource": "Cursor MCP configuration file",
+      "hasSuspiciousPattern": true,
+      "suspiciousReasons": [
+        "Contains shell execution or automated approval bypass (-y, --yes)",
+        "Contains unpinned package reference"
+      ],
+      "scanReportId": "scan-01709e98-a856-4746-bcdb-589b71b0b4c7"
+    }
+  ],
+  "findings": [
+    {
+      "id": "find-5e433151-8893-4576-b199-5876ae1ace98",
+      "ruleId": "AIT-MCP-CMD-01",
+      "severity": "HIGH",
+      "title": "Suspicious command wrapper",
+      "description": "Observed risk configuration in MCP server declaration.",
+      "category": "RUNTIME_SUSPICION",
+      "relatedApp": "Cursor",
+      "evidence": "Configuration command string or argument inspect",
+      "source": "risk_engine.py evaluation",
+      "timestamp": "2026-10-22T08:18:44.775Z",
+      "recommendation": "Pin package dependencies and avoid automated execution bypass flags.",
+      "status": "Open",
+      "analystNotes": "",
+      "history": [
+        {
+          "timestamp": "2026-10-22T08:18:44.775Z",
+          "userId": "system",
+          "userEmail": "test-runner@aiteebar.local",
+          "action": "Finding ingested from scan report",
+          "newStatus": "Open"
+        }
+      ],
+      "scanReportId": "scan-01709e98-a856-4746-bcdb-589b71b0b4c7"
+    }
+  ],
+  "activityEvents": [],
+  "scanReports": [
+    {
+      "id": "scan-01709e98-a856-4746-bcdb-589b71b0b4c7",
+      "scannerVersion": "0.2.1-py",
+      "scanTimestamp": "2026-10-22T08:18:44.775Z",
+      "scannedTarget": "TEST-SUITE-WIN11",
+      "reportSource": "sample_data",
+      "summary": {
+        "totalApps": 1,
+        "runningApps": 1,
+        "mcpConfigs": 1,
+        "mcpServers": 1,
+        "highFindings": 1,
+        "mediumFindings": 0,
+        "lowFindings": 0,
+        "totalActivityEvents": 0
+      },
+      "rawReportJson": "{\n  \"scanner_version\": \"0.2.1-py\",\n  \"scanned_target\": \"TEST-SUITE-WIN11\",\n  \"discovered_apps\": [\n    {\n      \"name\": \"Cursor\",\n      \"category\": \"AI coding editors\",\n      \"running_status\": \"Running\"\n    }\n  ],\n  \"mcp_servers\": [\n    {\n      \"name\": \"unsafe-shell-server\",\n      \"command\": \"cmd.exe\",\n      \"args\": [\n        \"/c\",\n        \"python\",\n        \"-m\",\n        \"server\",\n        \"-y\"\n      ],\n      \"is_version_pinned\": false\n    }\n  ],\n  \"findings\": [\n    {\n      \"rule_id\": \"AIT-MCP-CMD-01\",\n      \"severity\": \"HIGH\",\n      \"title\": \"Suspicious command wrapper\"\n    }\n  ]\n}",
+      "uploadedAt": "2026-10-22T08:18:44.775Z",
+      "uploadedByEmail": "test-runner@aiteebar.local",
+      "fileName": "test_scan.json"
+    }
+  ],
+  "teamMembers": [],
+  "documentation": [
+    {
+      "id": "doc-1",
+      "slug": "project-overview",
+      "title": "Aiteebar AI Security Platform Overview",
+      "category": "Overview",
+      "order": 1,
+      "summary": "Introduction to Aiteebar: why AI application and MCP configuration security matters.",
+      "lastUpdated": "2026-10-20",
+      "content": "### Mission & Philosophy\nAiteebar is built on a simple premise: **Enterprises cannot secure AI adoption if they do not know what AI applications and MCP servers are configured on developer machines.**\n\nModern AI developer environments rely heavily on the Model Context Protocol (MCP) and agentic extensions. While these grant LLMs autonomous access to filesystems, databases, and CLI tools, they also introduce unverified dependencies, unpinned scripts, and potential privilege escalation vectors.\n\nAiteebar follows a four-pillar lifecycle:\n1. **Discover**: Locate AI editors, desktop assistants, and local inference runtimes without relying on self-reporting.\n2. **Assess**: Inspect configuration files (e.g. Cursor, Claude Desktop), command arguments, package versions, and directory access permissions.\n3. **Monitor**: Collect filesystem activity evidence in designated AI workspaces using lightweight file monitoring.\n4. **Protect**: Surface actionable, severity-rated findings, distinguish configuration risks from confirmed runtime actions, and enforce organizational policy.\n"
+    },
+    {
+      "id": "doc-2",
+      "slug": "scanner-workflow",
+      "title": "Python Mini Scanner Architecture & Workflow",
+      "category": "Scanner",
+      "order": 2,
+      "summary": "How the Aiteebar Python scanner runs on Windows endpoints and generates reports.",
+      "lastUpdated": "2026-10-20",
+      "content": "### Architecture of Aiteebar Mini Scanner\nThe existing Python scanner located on target workstations (e.g. in `C:\\Users\\kamran\\Desktop\\Aiteebar-Lab`) comprises:\n- `aiteebar_mini_scanner.py`: Orchestrator that scans registry keys, default paths, and config files.\n- `risk_engine.py`: Evaluates discovered configurations against security rules.\n- `activity_monitor.py`: Uses the Python `watchdog` library to log filesystem modifications in monitored directories.\n- `scan_report.json`: Standardized output containing discovered applications, MCP server details, and rule evaluation findings.\n\n### Execution Model\n1. The scanner is executed locally by an authorized administrator or scheduled service.\n2. It **never** executes MCP commands or runs arbitrary server binaries.\n3. It sanitizes sensitive tokens and generates a structured JSON report.\n4. The JSON report is ingested into this Aiteebar Platform via the web dashboard or authenticated Agent REST API.\n"
+    },
+    {
+      "id": "doc-3",
+      "slug": "mcp-configuration-security",
+      "title": "MCP Server Configuration Inspection & Risks",
+      "category": "MCP Security",
+      "order": 3,
+      "summary": "Understanding Model Context Protocol configurations and vulnerabilities.",
+      "lastUpdated": "2026-10-20",
+      "content": "### What is Model Context Protocol (MCP)?\nModel Context Protocol allows AI client applications (such as Cursor, Windsurf, or Claude Desktop) to connect with local or remote servers that expose tools, resources, and prompt templates.\n\n### Common Configuration Risks\n1. **Unpinned Packages (Rule AIT-MCP-001)**:\n   Configurations often execute `npx -y @some/mcp-server` without pinning a specific cryptographic hash or semantic version. If the package maintainer's account is compromised, the next time the AI editor starts, a malicious payload could be pulled down and executed.\n2. **Suspicious Shell Execution (Rule AIT-MCP-002)**:\n   Configurations invoking `cmd.exe /c`, `powershell.exe -EncodedCommand`, or shell redirects inside tool execution pipelines.\n3. **Broad Filesystem Whitelists (Rule AIT-MCP-003)**:\n   Allowing root drives (`C:\\` or `/`) or sensitive user directories (`~/.ssh`, `~/.aws`) in MCP access permissions.\n"
+    },
+    {
+      "id": "doc-4",
+      "slug": "risk-rules-spec",
+      "title": "Risk Engine Rules & Severity Standards",
+      "category": "Risk Rules",
+      "order": 4,
+      "summary": "Detailed specification of Aiteebar risk rules, scoring, and remediation.",
+      "lastUpdated": "2026-10-20",
+      "content": "### Severity Tiers\n- **HIGH**: Imminent or dangerous configuration vulnerability (e.g. arbitrary command execution flags, unsafe interpreter chaining).\n- **MEDIUM**: Significant security hygiene gap that could lead to supply-chain tampering (e.g. unpinned package version fetched over network).\n- **LOW**: Suboptimal configuration with limited attack surface.\n- **INFORMATIONAL**: Noteworthy configuration element recorded for audit compliance.\n\n### Currently Implemented Rules\n- **AIT-MCP-CMD-01 (HIGH)**:\n  *Trigger*: MCP server command contains `cmd.exe`, `powershell`, `sh`, or automated execution bypass flags (`-y`, `--yes`).\n  *Evidence*: Exact command line and matched token.\n  *Remediation*: Pin command to dedicated binary, eliminate arbitrary shell wrappers, and require explicit user prompt for tool approvals.\n\n- **AIT-MCP-VER-02 (MEDIUM)**:\n  *Trigger*: MCP server package reference lacks explicit version tag (e.g. `@latest` or bare package name).\n  *Evidence*: Target package argument.\n  *Remediation*: Lock package to a specific immutable semantic version (e.g. `@package@1.4.2`).\n"
+    },
+    {
+      "id": "doc-5",
+      "slug": "limitations-and-privacy",
+      "title": "Operational Limitations & Privacy Constitution",
+      "category": "Limitations & Privacy",
+      "order": 5,
+      "summary": "Clear boundaries, ethical guidelines, and known technical limitations of the platform.",
+      "lastUpdated": "2026-10-20",
+      "content": "### Truthful Scope & Known Limitations\nTo maintain high credibility, Aiteebar adheres to strict reporting truths:\n1. **Process Attribution**: When monitoring via basic filesystem hooks (Watchdog), the operating system does not automatically attach the PID or process image path to file modification events. Unless an Event Tracing for Windows (ETW) provider is active, the platform labels process attribution as **\"Responsible process unknown\"**.\n2. **No Guaranteed Leak Detection**: The platform observes file and configuration telemetry. It does not inspect encrypted network traffic or claim guaranteed detection of all data exfiltration.\n3. **No Automatic Command Execution**: The platform strictly inspects configurations statically. It will never run discovered MCP servers or execute scripts.\n4. **Privacy Protection**: The platform never collects environment variable secrets, API keys, or raw file contents.\n"
+    }
+  ],
+  "capabilities": [
+    {
+      "id": "cap-1",
+      "title": "Selected Windows AI Application Discovery",
+      "category": "Discovery",
+      "status": "Implemented",
+      "description": "Discovers known candidate paths and installed binaries for Cursor, VS Code AI extensions, Claude Desktop, and Ollama.",
+      "scope": "Windows Registry, LocalAppData, and Program Files candidate paths."
+    },
+    {
+      "id": "cap-2",
+      "title": "Cursor MCP Configuration Inspection",
+      "category": "Inspection",
+      "status": "Implemented",
+      "description": "Inspects Cursor configuration files (cursor_settings.json) to locate defined Model Context Protocol server entries.",
+      "scope": "Candidate Cursor config paths on local Windows filesystem."
+    },
+    {
+      "id": "cap-3",
+      "title": "Package Version Pinning Analysis",
+      "category": "Risk Analysis",
+      "status": "Implemented",
+      "description": "Flags MCP server configurations referencing unpinned packages (e.g. npx/uvx @latest or without explicit version locks).",
+      "scope": "Configured args in inspected MCP server declarations."
+    },
+    {
+      "id": "cap-4",
+      "title": "Suspicious Command Pattern Detection",
+      "category": "Risk Analysis",
+      "status": "Implemented",
+      "description": "Detects high-risk command strings, shell invocations (cmd.exe, powershell -enc, bash -c), and auto-approval flags (-y, --yes).",
+      "scope": "MCP server execution command lines and argument arrays."
+    },
+    {
+      "id": "cap-5",
+      "title": "JSON Scan Report Generation & Ingestion",
+      "category": "Reporting",
+      "status": "Implemented",
+      "description": "Standardized scan_report.json generation with full metadata, findings, targets, and evidence records.",
+      "scope": "Aiteebar scanner output schema."
+    },
+    {
+      "id": "cap-6",
+      "title": "Filesystem Event Monitoring with Watchdog",
+      "category": "Activity Monitoring",
+      "status": "Implemented",
+      "description": "Records file creation, modification, deletion, and moves within designated folders.",
+      "scope": "Configured folder monitoring via Python Watchdog library. Process attribution not collected in this mode."
+    },
+    {
+      "id": "cap-7",
+      "title": "Clearer Dashboard Risk Reporting",
+      "category": "Risk Analysis",
+      "status": "In Development",
+      "description": "Unified visualization of high, medium, and low severity security posture across workspaces.",
+      "scope": "Web dashboard analytics and posture metrics."
+    },
+    {
+      "id": "cap-8",
+      "title": "Scan Report Ingestion & Normalization",
+      "category": "Reporting",
+      "status": "In Development",
+      "description": "Validates untrusted scanner JSON, sanitizes path metadata, and normalizes findings into searchable database records.",
+      "scope": "Platform API import engine."
+    },
+    {
+      "id": "cap-9",
+      "title": "Expanded AI Application Discovery",
+      "category": "Discovery",
+      "status": "In Development",
+      "description": "Extending heuristics to detect Windsurf, Zed, Continue.dev, LM Studio, and Jan.ai.",
+      "scope": "Expanded candidate process names and config paths."
+    },
+    {
+      "id": "cap-10",
+      "title": "Broader MCP Configuration Discovery",
+      "category": "Inspection",
+      "status": "In Development",
+      "description": "Locating Claude Desktop config, Windsurf config, and custom MCP JSON files in workspace roots.",
+      "scope": "Standardized %APPDATA% and project-level MCP files."
+    },
+    {
+      "id": "cap-11",
+      "title": "Improved Activity Evidence Correlation",
+      "category": "Activity Monitoring",
+      "status": "In Development",
+      "description": "Matching filesystem event timestamps with known MCP invocation windows when available.",
+      "scope": "Heuristic correlation engine."
+    },
+    {
+      "id": "cap-12",
+      "title": "Reliable Process Attribution",
+      "category": "Activity Monitoring",
+      "status": "Planned",
+      "description": "Capturing exact process ID and parent process tree for filesystem and network activity via ETW (Event Tracing for Windows).",
+      "scope": "Native Windows kernel/ETW driver integration."
+    },
+    {
+      "id": "cap-13",
+      "title": "Windows Security Event Log Integration",
+      "category": "Activity Monitoring",
+      "status": "Planned",
+      "description": "Correlating Sysmon and Event Log 4688 (Process Creation) with AI runtime activities.",
+      "scope": "Windows Event Log collector."
+    },
+    {
+      "id": "cap-14",
+      "title": "Approved / Unapproved AI Application Policy Enforcement",
+      "category": "Discovery",
+      "status": "Planned",
+      "description": "Automated policy alerting and workflow ticketing when unauthorized AI binaries are detected.",
+      "scope": "Enterprise policy engine."
+    },
+    {
+      "id": "cap-15",
+      "title": "Browser & Network Security Integrations",
+      "category": "Inspection",
+      "status": "Planned",
+      "description": "Detecting browser AI sessions via network proxy evidence or managed browser extension logs.",
+      "scope": "Enterprise proxy & browser policy integrations."
+    },
+    {
+      "id": "cap-16",
+      "title": "Data Loss Prevention (DLP) Integration",
+      "category": "Risk Analysis",
+      "status": "Planned",
+      "description": "Inspecting data transfers to external AI APIs for PII, API tokens, and confidential source code.",
+      "scope": "DLP content inspection modules."
+    }
+  ],
+  "auditLogs": [],
+  "settings": {
+    "organizationName": "Aiteebar Security Lab",
+    "platformDisplayName": "Aiteebar AI Security",
+    "timezone": "UTC",
+    "contactEmail": "security@aiteebar.local",
+    "dataRetentionDays": 90,
+    "enableAgentApi": true,
+    "agentApiKey": "ait_live_sec_8ca3a63d0091fcd05387860220bb9156",
+    "approvedAppPolicies": [
+      {
+        "name": "Cursor",
+        "category": "AI coding editors",
+        "note": "Authorized for engineering team with pinned extension version"
+      },
+      {
+        "name": "Claude Desktop",
+        "category": "Desktop AI assistants",
+        "note": "Authorized with organizational login"
+      },
+      {
+        "name": "VS Code with GitHub Copilot",
+        "category": "AI coding editors",
+        "note": "Standard approved configuration"
+      }
+    ],
+    "approvedMcpCommands": [
+      "node",
+      "python",
+      "docker run"
+    ],
+    "updatedAt": "2026-10-22T08:18:44.402Z"
+  }
+}

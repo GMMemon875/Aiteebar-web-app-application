@@ -1,0 +1,6 @@
+{
+  "name": "Aiteebar AI Security Platform",
+  "description": "Discover, assess, monitor, and protect AI applications, inspect MCP configurations, identify risky patterns, and track evidence-based activity.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
